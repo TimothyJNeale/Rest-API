@@ -1,1 +1,5 @@
+# macbook
 source .venv/bin/activate  
+
+# pc
+.venv\Scripts\activate
