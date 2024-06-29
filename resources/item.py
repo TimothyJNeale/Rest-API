@@ -2,7 +2,9 @@ import uuid
 from flask import request
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
+
 from db import items
+from schemas import ItemSchema, ItemUpdateSchema
 
 blp = Blueprint('items', __name__, description="Operations on items")
 
@@ -21,35 +23,27 @@ class Item(MethodView):
         except KeyError:
             abort(404, message='Item not found.')
 
-    def put(self, item_id):
-        item_data = request.get_json()
-        if 'price' not in item_data or 'name' not in item_data:
-            abort(400, message='Bad request. Ensure price and name are provided.')
-
-        else:
-            try:
-                item = items[item_id]
-                item |= item_data
-        
-                return item
-            except KeyError:
-                abort(404, message='Item not found.')
+    @blp.arguments(ItemUpdateSchema)
+    def put(self, item_data, item_id):
+        try:
+            item = items[item_id]
+            item |= item_data
+    
+            return item
+        except KeyError:
+            abort(404, message='Item not found.')
 
 
-@blp.route('/item/')
+@blp.route('/item')
 class ItemList(MethodView):
     def get(self):
         return {'itemss': list(items.values())} # Return a dictionary
 
-    def post(self):
-        item_data = request.get_json()
-        if 'store_id' not in item_data or 'price' not in item_data or 'name' not in item_data:
-            abort(400, message='Bad request. Ensure store_id, price and name are provided.')
-
-        else:
-            for item in items.values():
-                if item['name'] == item_data['name'] and item['store_id'] == item_data['store_id']:
-                    abort(400, message='Item already exists.')
+    @blp.arguments(ItemSchema)
+    def post(self, item_data):
+        for item in items.values():
+            if item['name'] == item_data['name'] and item['store_id'] == item_data['store_id']:
+                abort(400, message='Item already exists.')
 
         item_id = uuid.uuid4().hex
         item = {**item_data, 'id': item_id}
