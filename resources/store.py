@@ -6,7 +6,7 @@ from db import stores
 
 blp = Blueprint('stores', __name__, description="Operations on stores")
 
-blp.route('/store/<string:store_id>')
+@blp.route('/store/<string:store_id>')
 class Store(MethodView):
     def get(self, store_id):
         try:
@@ -21,7 +21,7 @@ class Store(MethodView):
         except KeyError:
             abort(404, message='Store not found.')
 
-blp.route('/store/')
+@blp.route('/store/')
 class StoreList(MethodView):
     def get(self):
         return {'stores': list(stores.values())} # Return a dictionary
