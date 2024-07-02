@@ -6,15 +6,19 @@ env/
 ENV/
 env.bak/
 venv.bak/
+
 # My additions to basic Mac gitignore #
 #######################################
 /dev/*
 .vscode/
+*.swp
+
 # Ignore Python bytecode
 /__pycache__
 __pycache__/
 *.pyc
 *.pyo
+
 # Logs and databases #
 ######################
 *.log
@@ -38,7 +42,6 @@ Thumbs.db
 *.xcuserstate
 project.xcworkspace/
 xcuserdata/
- 
  
 # IDE
 *.idea
