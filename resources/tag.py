@@ -18,6 +18,7 @@ class TagsInStore(MethodView):
     @blp.arguments(TagSchema)
     @blp.response(201, TagSchema)
     def post(self, tag_data, store_id):
+
         tag = TagModel(**tag_data, store_id=store_id)
 
         try:
