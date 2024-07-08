@@ -1,7 +1,10 @@
 import os
+import secrets
 
 from flask import Flask, request
 from flask_smorest import Api
+from flask_jwt_extended import JWTManager
+from dotenv import load_dotenv
 
 from db import db
 import models
@@ -12,6 +15,8 @@ from resources.tag import blp as TagBlueprint
 
 def create_app(db_url=None):
     app = Flask(__name__)
+
+    load_dotenv()
 
     app.config['PROPAGATE_EXCEPTIONS'] = True
     app.config['API_TITLE'] = 'Store REST API'
@@ -26,6 +31,9 @@ def create_app(db_url=None):
     db.init_app(app)
 
     api = Api(app)
+
+    app.config['JWT_SECRET_KEY'] = os.getenv("JWT_SECRET_KEY")
+    jwt = JWTManager(app)
 
     with app.app_context():
             db.create_all()
