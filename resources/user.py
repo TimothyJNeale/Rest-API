@@ -1,6 +1,7 @@
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
 from passlib.hash import pbkdf2_sha256
+from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 
 from db import db
 from models import UserModel
@@ -20,6 +21,15 @@ class RegisterUser(MethodView):
         try:
             db.session.add(user)
             db.session.commit()
+        
+        except IntegrityError:
+            db.session.rollback()
+            abort(400, message='A store with that name aready exists.')
+
+        except SQLAlchemyError:
+            db.session.rollback()
+            abort(500, message='An error occurred whilst inserting the store to the database.')    
+
         except Exception as e:
             db.session.rollback()
             abort(500, message=str(e))
