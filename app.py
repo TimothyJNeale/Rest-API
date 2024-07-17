@@ -7,6 +7,7 @@ from flask_jwt_extended import JWTManager
 from dotenv import load_dotenv
 
 from db import db
+from blocklist import BLOCKLIST
 
 from resources.item import blp as ItemBlueprint
 from resources.store import blp as StoreBlueprint
@@ -35,6 +36,19 @@ def create_app(db_url=None):
     app.config["JWT_SECRET_KEY"] = jwt_secret_key
 
     jwt = JWTManager(app)
+
+    @jwt.token_in_blocklist_loader
+    def check_if_token_in_blocklist(jwt_header, jwt_payload):
+        jti = jwt_payload["jti"]
+        return jti in BLOCKLIST
+    
+    @jwt.revoked_token_loader
+    def revoked_token_callback(jwt_header, jwt_payload):
+        return (
+            jsonify({
+            'description': 'The token has been revoked.',
+            'error': 'token_revoked'}), 401,
+        )
 
     @jwt.additional_claims_loader
     def add_claims_to_access_token(identity):
