@@ -25,11 +25,11 @@ class RegisterUser(MethodView):
         
         except IntegrityError:
             db.session.rollback()
-            abort(400, message='A store with that name aready exists.')
+            abort(400, message='A user with that name aready exists.')
 
         except SQLAlchemyError:
             db.session.rollback()
-            abort(500, message='An error occurred whilst inserting the store to the database.')    
+            abort(500, message='An error occurred whilst inserting the user to the database.')    
 
         except Exception as e:
             db.session.rollback()
