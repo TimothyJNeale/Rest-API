@@ -49,6 +49,14 @@ def create_app(db_url=None):
             'description': 'The token has been revoked.',
             'error': 'token_revoked'}), 401,
         )
+    
+    @jwt.needs_fresh_token_loader
+    def token_not_fresh_callback(jwt_header, jwt_payload):
+        return (
+            jsonify({
+            'description': 'Fresh token required.',
+            'error': 'fresh_token_required'}), 401,
+        )
 
     @jwt.additional_claims_loader
     def add_claims_to_access_token(identity):
