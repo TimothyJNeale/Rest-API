@@ -4,6 +4,7 @@ import secrets
 from flask import Flask, jsonify
 from flask_smorest import Api
 from flask_jwt_extended import JWTManager
+from flask_migrate import Migrate
 from dotenv import load_dotenv
 
 from db import db
@@ -30,6 +31,7 @@ def create_app(db_url=None):
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     db.init_app(app)
+    migrate = Migrate(app, db)
     api = Api(app)
 
     jwt_secret_key = os.environ.get("JWT_SECRET_KEY")
@@ -88,9 +90,6 @@ def create_app(db_url=None):
             'description': 'Request does not contain an access token.',
             'error': 'authorization_required'}), 401,
         )
-
-    with app.app_context():
-        db.create_all()
 
     api.register_blueprint(ItemBlueprint)
     api.register_blueprint(StoreBlueprint)
