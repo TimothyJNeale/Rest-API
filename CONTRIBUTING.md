@@ -1,6 +1,8 @@
 # CONTRIBUTING
 Was notes.txt
 
+### Going to add this change to help tracking branches (I'm still a gi newbie)
+
 ## macbook
 source .venv/bin/activate  
 
