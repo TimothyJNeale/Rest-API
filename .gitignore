@@ -24,7 +24,7 @@ __pycache__/
 *.log
 *.sql
 *.sqlite
-/instance/*
+#/instance/*
  
 # OS generated files #
 ######################
